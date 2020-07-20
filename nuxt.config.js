@@ -35,7 +35,8 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
-    '~/plugins/firebase'
+    '~/plugins/firebase',
+    '~/plugins/user'
   ],
   serverMiddleware: [
     { handler: '~/server-middleware/auth' }

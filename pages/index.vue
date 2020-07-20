@@ -14,7 +14,6 @@ export default Vue.extend({
     async signup () {
       const provider = new this.$firebase.auth.GoogleAuthProvider()
       const { user } = await this.$firebase.auth().signInWithPopup(provider)
-      console.log(user)
       if (!user) { return }
 
       const idToken = await user.getIdToken()

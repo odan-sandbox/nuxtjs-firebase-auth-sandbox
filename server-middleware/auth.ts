@@ -10,24 +10,24 @@ if (admin.apps.length === 0) {
   })
 }
 
-const serverMiddleware: ServerMiddleware = function (req, res, next) {
+const serverMiddleware: ServerMiddleware = function (req, _, next) {
   const cookies = new Cookies(req.headers.cookie)
   const sessionCookie = cookies.get('session') || ''
 
   admin.auth().verifySessionCookie(
-    sessionCookie, true /** checkRevoked */)
+    sessionCookie, true)
     .then((decodedClaims) => {
       return admin.auth().getUser(decodedClaims.uid)
     })
     .then((user) => {
-      // TODO: hydration
-      return user
+      (req as any).user = user
+      next()
     })
     .catch((error) => {
       // Session cookie is unavailable or invalid. Force user to login.
       console.error(error)
+      next()
     })
-  next()
 }
 
 export default serverMiddleware
