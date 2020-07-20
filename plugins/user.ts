@@ -7,11 +7,11 @@ export type State = {
 
 const state = Vue.observable<State>({ email: undefined })
 
-export function updateState (newState: State) {
+function updateState (newState: State) {
   state.email = newState.email
 }
 
-function getUser (context: Context) {
+function updateStateFromContext (context: Context) {
   if (process.client) {
     const user = (window as any)?.__NUXT__?.user
     // updateState({ email: 'aaa' })
@@ -23,7 +23,7 @@ function getUser (context: Context) {
 }
 
 const plugin: Plugin = (context, inject) => {
-  getUser(context)
+  updateStateFromContext(context)
   inject('user', state)
 }
 
