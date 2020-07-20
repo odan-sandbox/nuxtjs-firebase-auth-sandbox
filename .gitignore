@@ -88,3 +88,5 @@ sw.*
 
 # Vim swap files
 *.swp
+
+nuxt-firebase-auth-sandbox-firebase-adminsdk-2ulff-70db83095e.json

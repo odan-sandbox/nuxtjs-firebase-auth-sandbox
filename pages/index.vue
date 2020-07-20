@@ -1,36 +1,32 @@
 <template>
   <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">
-        nuxtjs-firebase-auth-sandbox
-      </h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
-    </div>
+    <button @click="signup">
+      signup
+    </button>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 
-export default Vue.extend({})
+export default Vue.extend({
+  methods: {
+    async signup () {
+      const provider = new this.$firebase.auth.GoogleAuthProvider()
+      const { user } = await this.$firebase.auth().signInWithPopup(provider)
+      console.log(user)
+      if (!user) { return }
+
+      const idToken = await user.getIdToken()
+
+      await this.$axios.post('/api/signup', { idToken })
+
+      await this.$firebase.auth().signOut()
+
+      await this.$axios.get('/api/hello')
+    }
+  }
+})
 </script>
 
 <style>
