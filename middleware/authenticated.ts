@@ -4,7 +4,7 @@ const middleware: Middleware = ({ req, redirect, beforeNuxtRender }) => {
   if (process.client) {
     return
   }
-  const user = (req as any).user
+  const user = req.user
 
   if (!user) {
     redirect('/')

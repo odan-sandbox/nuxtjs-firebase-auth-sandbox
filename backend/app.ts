@@ -1,5 +1,6 @@
 import express, { CookieOptions } from 'express'
 import admin from 'firebase-admin'
+import cookieParser from 'cookie-parser'
 
 const serviceAccount = require('../nuxt-firebase-auth-sandbox-firebase-adminsdk-2ulff-70db83095e.json')
 
@@ -10,14 +11,27 @@ admin.initializeApp({
 const app = express()
 
 app.use(express.json())
+app.use(cookieParser())
 
-app.get('/hello', (req, res) => {
-  console.log(req.cookies)
+app.get('/hello', (_, res) => {
   res.send('hello')
 })
 
+app.get('/profile', (req, res) => {
+  const { session } = req.cookies
+
+  admin.auth().verifySessionCookie(session, true)
+    .then((decodedClaims) => {
+      return admin.auth().getUser(decodedClaims.uid)
+    })
+    .then((user) => {
+      res.send({ email: user.email })
+    }).catch(() => {
+      res.sendStatus(401)
+    })
+})
+
 app.post('/signup', (req, res) => {
-  console.log(req.body)
   const idToken = req.body.idToken.toString()
   const expiresIn = 60 * 60 * 24 * 5 * 1000
 
